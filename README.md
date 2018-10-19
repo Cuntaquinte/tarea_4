@@ -27,7 +27,7 @@ Los datos originales estan disponibles en:
 - https://www.datos.gov.co/Seguridad-y-Defensa/Estadistica-de-Homicidios-En-la-Ciudad-de-Palmira-/cfbu-if5n
 
 PreProcesados:  
-- https://github.com/Cuntaquinte/tarea_4/data
+- https://github.com/Cuntaquinte/tarea_4/tree/master/data
 
 # Objetivos del proyecto (Tarea Principal) y tecnologías usadas:
 El objetivo del proyecto es generar una visualización  que permita ver los detalles de datos temporales, en este caso se descargaron datos referentes a cifras de asesinatos en la ciudad de Palmira.

@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Tarea 4</title>
+
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link href="css/style.css" rel="stylesheet" type="text/css">
+ 
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<div id="main">
+
+<div id="header">
+<span class="title">Asesinatos en Palmira</span><br>
+</div>
+<div id="corporate">
+<h3>Visualización de datos temporales</h3>
+</div>
+
+<div id="content">
+<div>
+  Alumno: Carlos Moreno  Ibarguen, Cod 201627339
+</div>
+
+
+<h3>Estadistica de Homicidios En la Ciudad de Palmira -Valle del Cauca Desde el año 2005 Hasta 2017</h3>
+
+
+    <h1 class="display-3">Por que tantos muertos en Palmira</h1>
+    <p>Estadistica de Homicidios En la Ciudad de Palmira -Valle del Cauca Desde el año 2005 Hasta 2017.<br>
+    Homicidios 2011 - 2017 <br>
+    Municipio de Palmira <br>
+    Fuente: Secretaría de Seguridad y Convivencia Municipio de Palmira con Datos de Policía, Sijin, CTI, Fiscalía, Medicina Legal</p>
+    <p><a class="btn btn-primary btn-lg" href="https://www.datos.gov.co/Seguridad-y-Defensa/Estadistica-de-Homicidios-En-la-Ciudad-de-Palmira-/cfbu-if5n" role="button">leer mas »</a></p>
+<br><br>
+
+
+<h3 style="font-size:16px">Viz</h3>
+<div>
+    <div>
+      <blockquote id="instrucct"><h4>Instrucciones</h4>
+        <p>
+        Al PASAR el mouse sobre las <u>barras</u> de los diferentes a~nos se puede observar información referente al número de asesinatos totalesen la ciudad de Palmira.<br>
+        Al hacer CLICK sobre ccualquiera de las <u>barras</u> de las a~nosse podrán  ver los datos de dichos asesinatos por mes.
+        </p>
+      </blockquote><br>
+  </div>
+
+<svg width="720" height="400"></svg>
+<br><br><br>
+<chart width="720" height="400"></chart>
+
+
+</div>
+
+
+<h3>Licencia MIT</h3>
+<div>
+  <p>
+
+<i>Copyright 2018 - Carlos Moreno Ibarguen</i><br><br>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br><br>
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+<br><br>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ========================================================================== -->
+
+<script>
+
+var svg = d3.select("svg"),
+    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+    wd=width
+    hg=height
+var chart
+var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+    y = d3.scaleLinear().rangeRound([height, 0]);
+
+var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.tsv("data/total_kills.tsv")
+    .then((data) => {
+        return data.map((d) => {
+          d.totalk = +d.total_kills;
+          return d;  
+        });
+    })
+    .then((data) => {
+      console.log(data)
+        x.domain(data.map(function(d) { return d.year; }));
+        y.domain([0, d3.max(data, function(d) { return d.totalk; })]);
+
+        g.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        g.append("g")
+            .attr("class", "axis axis--y")
+            .call(d3.axisLeft(y))
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -6)
+          .attr("x", -10)
+
+        g.selectAll(".bar")
+          .data(data)
+          .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.year); })
+            .attr("y", function(d) { return y(d.totalk); })
+            .attr("width", x.bandwidth()-10)
+            .attr("height", function(d) { return height - y(d.totalk); })
+    .on('mouseenter', function (actual, i) {
+            d3.selectAll('.value')
+              // .attr('opacity', 0)
+            d3.select(this)
+              .transition()
+              .duration(300)
+            g.append('text')
+              .attr('class', 'divergence')
+              .attr('x', width-80)
+              .attr('y',50)
+              .attr('fill', 'black')
+              .attr('text-anchor', 'middle')
+              .text((a) => {            
+              return  actual.totalk+' muertes totales en '+actual.year;
+              })
+
+          })
+    .on('mouseleave', function () {
+        d3.selectAll('.value')
+            g.selectAll('.divergence').remove()
+      })
+
+    .on("click", function(d){     
+      d3.selectAll('#detail').remove();
+       d3.select(this).call(dataSwap, d.year); 
+    });
+            ;
+    })    
+    .catch((error) => {
+        throw error;
+    });
+
+    svg
+      .append('text')
+      .attr('class', 'label')
+      .attr('x', -(height / 2) )
+      .attr("dy", "0.70em")
+      .attr('transform', 'rotate(-90)')
+      .attr('text-anchor', 'middle')
+      .text('# Muertes registradas en Palmira -Valle del Cauca ');
+  
+  function dataSwap(text,yearSelected) {
+  
+    var margin = {top: 50, right: 50, bottom: 50, left: 50}
+        width = wd- margin.left - margin.right,
+        height = hg - margin.top - margin.bottom;
+    var currentYear =yearSelected
+
+
+    d3.tsv("data/months_kills.tsv")    
+    .then((data) => { 
+          return data.map((d) => {
+            // d.year = d.year
+            d.month = d.month;
+            d.kills +d.kills;
+            return d;  
+          });
+    })  
+
+      .then((data) => {
+
+      var dataset = data.filter(function(d) {return d.year == yearSelected })
+        
+        dataset.map(function(d){
+            // d.year =d.Year
+            d.month = d.month;
+            d.kills = +d.kills;
+        })
+
+      console.log("months "+dataset)
+        
+      var maxKills = d3.max(dataset, function(d){return parseFloat(d.kills)})
+
+
+      var yScale = d3.scaleLinear()
+      .domain([0, maxKills])
+      .range([height,0]);
+
+      var xScale = d3.scaleBand()
+        .domain(dataset.map(function(d) { return d.month; }))
+        .range([0, width]);
+
+
+          var line = d3.line()
+        .x(function(d) { return xScale(d.month); })
+        .y(function(d) { return yScale(d.kills); });
+
+      // 1. Add the SVG to the page and employ #2
+
+
+
+        svg = d3.select("chart")
+        .append("svg")
+          .attr('id', 'detail')
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+        chart=d3.selectAll("g").datum(dataset);
+
+
+        chart.enter()
+            .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+    
+      // 3. Call the x axis in a group tag
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+
+      // 4. Call the y axis in a group tag
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+      // 9. Append the path, bind the data, and call the line generator 
+      chart=svg.append("path")
+          // .datum(dataset) // 10. Binds data to the line 
+          .attr("class", "line") // Assign a class for styling 
+          .attr("d", line); // 11. Calls the line generator  
+
+      // 12. Appends a circle for each datapoint 
+      svg.selectAll(".dot")
+          .datum(dataset)
+          .enter().append("circle") // Uses the enter().append() method
+          .attr("class", "dot") // Assign a class for styling
+          .attr("cx", function(d, i) { return xScale(d.month) })
+          .attr("cy", function(d) { return yScale(d.kills) })
+          .attr("r", 5)
+            .on("mouseover", function(actual, i) { 
+              d3.selectAll('.value')
+              d3.select(this)
+                .transition()
+                .duration(300)
+            })
+
+
+        var label = svg.append("text")
+            .attr("class", "year label")
+            .attr("text-anchor", "end")
+            .attr("y", height - 15)
+            .attr("x", width)
+            .text((a) => {  
+                  return  yearSelected;
+                });
+
+
+      })
+}
+</script>
+
+
+
+<br><center>Visual Analitycs <br> Universidad de los Andes </center>
+
+</body>
+</html>

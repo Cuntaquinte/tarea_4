@@ -9,7 +9,7 @@ Autor:
 
 La visualización se encuentra disponible en Github en el siguiente enlace:
 
-- https://cuntaquinte.github.io/tarea_4/
+- https://cuntaquinte.github.io/tarea_4/index.html
 
 Requisitos
 -https://d3js.org/d3.v5.min.js

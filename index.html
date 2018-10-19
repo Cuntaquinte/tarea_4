@@ -78,7 +78,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 
-<!-- ========================================================================== -->
+<!-- =============================Codigo Js============================================= -->
 
 <script>
 
@@ -147,10 +147,10 @@ d3.tsv("data/total_kills.tsv")
           })
     .on('mouseleave', function () {
         d3.selectAll('.value')
-            g.selectAll('.divergence').remove()
+        g.selectAll('.divergence').remove()
       })
 
-    .on("click", function(d){  
+    .on("click", function(d){         	
       // en este punto mi código sangra, presento excusas pues no pude hacer funcionar  el update.
       d3.selectAll('#detail').remove();
        d3.select(this).call(dataSwap, d.year); 
@@ -169,6 +169,15 @@ d3.tsv("data/total_kills.tsv")
       .attr('transform', 'rotate(-90)')
       .attr('text-anchor', 'middle')
       .text('# Muertes registradas en Palmira -Valle del Cauca ');
+
+
+    svg.append('text')
+      .attr('class', 'title')
+      .attr('x', width / 2 + 70)
+      .attr('y', 17)
+      .attr('text-anchor', 'middle')
+      .text('Asesinatos en Palmira entre 2005 y  2017 (valores anuales)')
+
   
   function dataSwap(text,yearSelected) {
   
@@ -216,9 +225,6 @@ d3.tsv("data/total_kills.tsv")
         .x(function(d) { return xScale(d.month); })
         .y(function(d) { return yScale(d.kills); });
 
-      // 1. Add the SVG to the page and employ #2
-
-
 
         svg = d3.select("chart")
         .append("svg")
@@ -235,28 +241,23 @@ d3.tsv("data/total_kills.tsv")
         chart.enter()
             .attr("transform","translate(" + margin.left + "," + margin.top + ")");
     
-      // 3. Call the x axis in a group tag
       svg.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+          .call(d3.axisBottom(xScale)); 
 
-      // 4. Call the y axis in a group tag
       svg.append("g")
           .attr("class", "y axis")
-          .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+          .call(d3.axisLeft(yScale)); 
 
-      // 9. Append the path, bind the data, and call the line generator 
       chart=svg.append("path")
-          // .datum(dataset) // 10. Binds data to the line 
-          .attr("class", "line") // Assign a class for styling 
-          .attr("d", line); // 11. Calls the line generator  
+          .attr("class", "line") 
+          .attr("d", line); 
 
-      // 12. Appends a circle for each datapoint 
       svg.selectAll(".dot")
           .datum(dataset)
-          .enter().append("circle") // Uses the enter().append() method
-          .attr("class", "dot") // Assign a class for styling
+          .enter().append("circle") 
+          .attr("class", "dot") 
           .attr("cx", function(d, i) { return xScale(d.month) })
           .attr("cy", function(d) { return yScale(d.kills) })
           .attr("r", 5)
@@ -276,6 +277,13 @@ d3.tsv("data/total_kills.tsv")
             .text((a) => {  
                   return  yearSelected;
                 });
+
+	    svg.append('text')
+	      .attr('class', 'title')
+	      .attr('x', width / 2 + 70)
+	      .attr('y', 0)
+	      .attr('text-anchor', 'middle')
+	      .text('Asesinatos en Palmira por mes')
 
 
       })

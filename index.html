@@ -151,7 +151,7 @@ d3.tsv("data/total_kills.tsv")
       })
 
     .on("click", function(d){  
-      ## en este punto mi código sangra, presento excusas pues no pude hacer funcionar  el update.
+      // en este punto mi código sangra, presento excusas pues no pude hacer funcionar  el update.
       d3.selectAll('#detail').remove();
        d3.select(this).call(dataSwap, d.year); 
     });

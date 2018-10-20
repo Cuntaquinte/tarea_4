@@ -55,7 +55,7 @@ Los datos se obtuvieron de un Dataset tipo Tabla.
 
 ## Why?
 - Analyze - Consume- Present >> features
-- Search - Discover  >> Trtends
+- Search - Discover  >> Trends
 
 ## How?
 ### Marcas 
